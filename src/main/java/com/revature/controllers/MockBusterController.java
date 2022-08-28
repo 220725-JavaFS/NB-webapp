@@ -16,6 +16,10 @@ import com.revature.services.MockBusterService;
 
 public class MockBusterController extends HttpServlet{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private MockBusterService mockBusterService = new MockBusterService();
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
@@ -28,7 +32,7 @@ public class MockBusterController extends HttpServlet{
 		String[] urlSections = URI.split("/");
 		
 		if (urlSections.length==3) {
-			List<MockBuster> list = mockBusterService.getAllMockBustersService();
+			List<Object> list = mockBusterService.getAllMockBustersService();
 			
 			String json = objectMapper.writeValueAsString(list);
 			System.out.println(json);
@@ -92,24 +96,30 @@ public class MockBusterController extends HttpServlet{
 		response.setStatus(201);
 		
 	}
-	//Will need to edit this MORE
+	//Will need to edit this MORE IS BROKEN PLEASE FIXX 
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		
-		String URI = request.getRequestURI();
-		System.out.println(URI);
+		BufferedReader reader = request.getReader();
 		
-		String[] urlSections = URI.split("/");
+		String line = reader.readLine();
 		
-		int movieId = Integer.valueOf(urlSections[3]);
+	    String json = new String(line);
+	    
+	    MockBuster id = objectMapper.readValue(json, MockBuster.class);
+	    
+	    int movieid = id.getMovieId();
 		
-		mockBusterService.deleteMockBusterService(movieId);
+	    mockBusterService.deleteMockBusterService(movieid);
+	    
+	    response.setStatus(202);
 		
-		PrintWriter printWriter = response.getWriter();
 		
-		response.setStatus(200);
-		response.setContentType("application/json");
 		
 	}
+	
+ protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+	 
+ }
 	
 }

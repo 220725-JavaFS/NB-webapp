@@ -12,10 +12,10 @@ public class MockBusterService {
 	MockBuster mockObject = new MockBuster();
 	//make sure to pass the empty object over in getMockBusterByIdService
 	public MockBuster getMockBusterByIdService(int movieId) {
-		return mockBusterDAO.getMockBusterbyID(movieId);
+		return mockBusterDAO.getMockBusterbyID(mockObject, movieId);
 	}
 	
-	public List<MockBuster> getAllMockBustersService(){
+	public List<Object> getAllMockBustersService(){
 		return mockBusterDAO.getAllMockBusters(mockObject);
 	}
 	
@@ -24,7 +24,11 @@ public class MockBusterService {
 	}
 	
 	public void deleteMockBusterService(int movieId) {
-		 mockBusterDAO.deleteSingleMockBusterByID(movieId, mockObject);
+		 mockBusterDAO.deleteSingleMockBusterByID(mockObject, movieId);
+	}
+	
+	public void updateMockBusterService(int id, String newDescr) {
+		mockBusterDAO.updateSingleMockBusterByID(mockObject, id, newDescr);
 	}
 
 }

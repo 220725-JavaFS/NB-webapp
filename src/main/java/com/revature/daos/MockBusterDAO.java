@@ -6,14 +6,14 @@ import com.revature.models.MockBuster;
 
 public interface MockBusterDAO {
 	
-	MockBuster getMockBusterbyID (int movieId);
+	MockBuster getMockBusterbyID (MockBuster mockbuster, int movieId);
 	
-	List<MockBuster> getAllMockBusters(MockBuster mockbuster);
+	List<Object> getAllMockBusters(MockBuster mockbuster);
 	
-	MockBuster insertSingleMockBuster(MockBuster mockBuster);
+	void insertSingleMockBuster(MockBuster mockBuster);
 	
-	MockBuster deleteSingleMockBusterByID (int movieId, MockBuster mockbuster);
+	void deleteSingleMockBusterByID (MockBuster mockbuster, int movieId);
 	
-	MockBuster updateSingleMockBusterByID (int movieId, String releaseYear);
+	void updateSingleMockBusterByID (MockBuster mockbuster, int movieId, String movieDescr);
 
 }
