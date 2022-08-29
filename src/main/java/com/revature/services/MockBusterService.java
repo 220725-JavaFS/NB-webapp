@@ -36,13 +36,14 @@ public class MockBusterService {
 		return false;
 	}
 	
-	public void deleteMockBusterService(int movieId) {
+	public boolean deleteMockBusterService(int movieId) {
 		if(movieId>0) {
 			//insert log here
 		 mockBusterDAO.deleteSingleMockBusterByID(mockObject, movieId);
+		 return true;
 		}else {
 			//insert log here
-			return;
+			return false;
 		}
 	}
 	

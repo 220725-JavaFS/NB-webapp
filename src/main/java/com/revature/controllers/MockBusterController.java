@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -74,14 +75,37 @@ public class MockBusterController extends HttpServlet{
 				
 				
 			} catch (NumberFormatException e) { //Ideal location for Stream API 
-				
-				response.setStatus(404);
-				e.printStackTrace();
-				return;
+					if(String.valueOf(urlSections[3]).equals("$")) {
+						List<Object> list = mockBusterService.getAllMockBustersService();
+						
+						Stream<Object> stream = list.stream();
+						
+						
+						
+						long sample = stream.count();
+						
+						
+						PrintWriter printWriter = response.getWriter();
+						
+						printWriter.print("Here are the total number of MockBusters in Stock!\n\n\n");
+						
+						printWriter.print(sample);
+						
+						
+						response.setStatus(200);
+						
+						response.setContentType("application/json");
+						
+					} else {
+					response.setStatus(404);
+					e.printStackTrace();
+					
+							}
+					}
 			}
-		}else if (urlSections.length==4){
-			response.setStatus(404);
-		}			
+				
+					
+			
 	}
 	
 	@Override
@@ -126,6 +150,7 @@ public class MockBusterController extends HttpServlet{
 				response.setStatus(201);
 				
 			} catch (NumberFormatException e) {
+				
 				response.setStatus(404);
 				}
 				return;
