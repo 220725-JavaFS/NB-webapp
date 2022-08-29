@@ -12,23 +12,46 @@ public class MockBusterService {
 	MockBuster mockObject = new MockBuster();
 	//make sure to pass the empty object over in getMockBusterByIdService
 	public MockBuster getMockBusterByIdService(int movieId) {
-		return mockBusterDAO.getMockBusterbyID(mockObject, movieId);
+		if(movieId>0){
+			return mockBusterDAO.getMockBusterbyID(mockObject, movieId);
+			//insert log here
+		}else {
+			return null;
+			//insert log here
+		}
+		
 	}
 	
 	public List<Object> getAllMockBustersService(){
 		return mockBusterDAO.getAllMockBusters(mockObject);
 	}
 	
-	public void insertMockBusterService(MockBuster mockBuster) {
+	public boolean insertMockBusterService(MockBuster mockBuster) {
+		if(mockBuster!=null) {
 		mockBusterDAO.insertSingleMockBuster(mockBuster);
+		//insert log here
+		return true;
+		}
+		//insert log here
+		return false;
 	}
 	
 	public void deleteMockBusterService(int movieId) {
+		if(movieId>0) {
+			//insert log here
 		 mockBusterDAO.deleteSingleMockBusterByID(mockObject, movieId);
+		}else {
+			//insert log here
+			return;
+		}
 	}
 	
-	public void updateMockBusterService(int id, String newDescr) {
+	public boolean updateMockBusterService(int id, String newDescr) {
+		if(id>0) {
 		mockBusterDAO.updateSingleMockBusterByID(mockObject, id, newDescr);
+		return true;
+			}
+		return false;
 	}
 
 }

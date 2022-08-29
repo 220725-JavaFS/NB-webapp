@@ -43,7 +43,7 @@ public class MockBusterDAOImpl implements MockBusterDAO{
 
 	@Override
 	public void updateSingleMockBusterByID(MockBuster mockbuster, int movieId, String movieDescr) {
-		ormController.updateObjectController(mockbuster, movieId, movieDescr, movieDescr, movieDescr, movieDescr, movieDescr);
+		ormController.updateObjectController(mockbuster, movieId, movieDescr, databaseURL, databaseUN, databasePW, databaseDriverName);
 	}
 	
 }

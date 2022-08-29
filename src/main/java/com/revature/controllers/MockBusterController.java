@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,10 +17,7 @@ import com.revature.services.MockBusterService;
 
 public class MockBusterController extends HttpServlet{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	
 	private MockBusterService mockBusterService = new MockBusterService();
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
@@ -39,7 +37,7 @@ public class MockBusterController extends HttpServlet{
 			
 			PrintWriter printWriter = response.getWriter();
 			
-			printWriter.print("\nHere are all of the MockBusters in stock!\n");
+			printWriter.print("\nHere are all of the MockBusters in stock!\n\n");
 			
 			printWriter.print(json);
 			
@@ -56,17 +54,32 @@ public class MockBusterController extends HttpServlet{
 				
 				PrintWriter printWriter = response.getWriter();
 				
-				String json = objectMapper.writeValueAsString(mockBuster);
+				String json;
 				
-				printWriter.print(json);
-				response.setStatus(200);
-				response.setContentType("application/json");
+				if (mockBuster==null) {
+					json = null;
+				} else {
+					json = objectMapper.writeValueAsString(mockBuster);
+				}
 				
-			} catch (NumberFormatException e) {
+					if(json==null){
+						printWriter.print("Sorry, it looks like that Id was very very wrong. You probably entered a negative number. Please try again.");
+						response.setStatus(404);
+					} else {
+						printWriter.print(json);
+						response.setStatus(200);
+						response.setContentType("application/json");
+					}
+				
+				
+				
+			} catch (NumberFormatException e) { //Ideal location for Stream API 
+				
 				response.setStatus(404);
+				e.printStackTrace();
 				return;
 			}
-		}else {
+		}else if (urlSections.length==4){
 			response.setStatus(404);
 		}			
 	}
@@ -96,30 +109,60 @@ public class MockBusterController extends HttpServlet{
 		response.setStatus(201);
 		
 	}
-	//Will need to edit this MORE IS BROKEN PLEASE FIXX 
+	//Finally works!
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		String URI = request.getRequestURI();
+		System.out.println(URI);
+		
+		String[] urlSections = URI.split("/");
+		if (urlSections.length==4) {
+			try {
+				int movieId = Integer.valueOf(urlSections[3]);
+				
+				mockBusterService.deleteMockBusterService(movieId);
+				PrintWriter printWriter = response.getWriter();
+				printWriter.print("You deleted the MockBuster with the Movie Id of "+movieId+"!");
+				response.setStatus(201);
+				
+			} catch (NumberFormatException e) {
+				response.setStatus(404);
+				}
+				return;
+			}
+				
+	}
+	
+	@Override
+ protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		
+	 StringBuilder sb = new StringBuilder();
+		//Getting ready to construct the message to send to the DAO
 		
 		BufferedReader reader = request.getReader();
 		
+		//Reading input to send to the DAO
 		String line = reader.readLine();
 		
-	    String json = new String(line);
-	    
-	    MockBuster id = objectMapper.readValue(json, MockBuster.class);
-	    
-	    int movieid = id.getMovieId();
+		while(line!=null) {
+			sb.append(line);
+			line=reader.readLine();
+		}
 		
-	    mockBusterService.deleteMockBusterService(movieid);
-	    
-	    response.setStatus(202);
+		String json = new String(sb);
+		
+		System.out.println(json);
+		
+		MockBuster mockBuster = objectMapper.readValue(json, MockBuster.class);
+	    int movieId = mockBuster.getMovieId();
+	    String movieDescr = mockBuster.getMovieDescr();
+		
+		mockBusterService.updateMockBusterService(movieId, movieDescr);
+		
+		PrintWriter printWriter = response.getWriter();
+		response.setStatus(200);
 		
 		
-		
-	}
-	
- protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-	 
  }
 	
 }
